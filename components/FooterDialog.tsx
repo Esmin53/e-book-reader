@@ -1,29 +1,74 @@
-import { Pressable, StyleSheet, Text, View } from "react-native"
+import { Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from "react-native"
 import Octicons from '@expo/vector-icons/Octicons';
 import { useContext, useState } from "react";
 import { ThemeContext } from "@/context/ThemeContext";
-
+import { ThemeColorsType } from "@/constants/Colors";
+import {getDocumentAsync} from "expo-document-picker"
+import { useSQLiteContext } from "expo-sqlite";
+import { BookContext, BookType } from "@/context/BookContext";
 
 const FooterDialog = () => {
-    const [isDialogOpen, setIsDialogOpen] = useState(true)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [name, setName] = useState<string >("Name")
+    
+    const [fileData, setFileData] = useState<{
+        title: string,
+        author: string,
+        uri: string
+    } | null>(null)
+    
+    const db = useSQLiteContext()
 
+    const { theme } = useContext(ThemeContext)
+    const {setBooks} = useContext(BookContext)
 
-    const {theme} = useContext(ThemeContext)
+    const styles = createStyles(theme)
+    
+    const pickDocument = async () => {
+        try {
+          const result = await getDocumentAsync({
+            type: ['text/plain', 'application/pdf'],
+            copyToCacheDirectory: true,
+          });
+    
+          if (result.assets !== null) {
+            console.log('File selected:', result.assets[0]);
+            setFileData({
+                title: result.assets[0].name,
+                author: "Unknown",
+                uri: result.assets[0].uri
+            })
+          } else {
+            console.log('User canceled file picker');
 
-    const styles = StyleSheet.create({
-        drawer: {
-            width: "100%",
-            height: 200,
-            backgroundColor: theme?.secondary,
-            bottom: 0,
-            left: 0,
-            padding: 10,
-            display: "flex",
-            flexDirection: "row"
-            
+          }
+        } catch (error) {
+          console.error('Error picking document:', error);
+          ToastAndroid.show(`There Was An Error Selecting This File`, ToastAndroid.BOTTOM)
         }
-    })
+      };
+    
+      const addBook = async () => {
+        if(fileData === null) return
+        try {
+            let { lastInsertRowId} = await db.runAsync(
+                `INSERT INTO books (title, author, uri, currentPage) VALUES (?, ?, ?, ?)`,
+                [fileData.title, fileData.author, fileData.uri, 0]
+            )
 
+            let book: BookType | null = await db.getFirstAsync(
+                `SELECT * FROM books WHERE id = ?`,
+            [ lastInsertRowId ])
+
+            ToastAndroid.show(`You Successfully added ${book?.title}`, ToastAndroid.BOTTOM)
+            
+            if(book !== null) setBooks(prev => [book, ...prev])
+            setFileData(null)
+        } catch (error) {
+            ToastAndroid.show(`There was an error adding this book to your collection!`, ToastAndroid.BOTTOM)
+        } 
+      }
+    
     return (
         <View style={[{
             position: "absolute",
@@ -33,13 +78,12 @@ const FooterDialog = () => {
 
         }, isDialogOpen ? styles.drawer : null]}>
             {isDialogOpen ? <View style={{
-                    flex: 1,
-                    height: "100%",
-                    display: "flex",
-                    flexDirection: "row",
-                    marginLeft: "auto",
-                    gap: 12
+                height: "auto",
+                flex: 1,
+                display: "flex",
+                flexDirection: "column"
             }}>
+                <View style={styles.drawerButtons}>
                 <Pressable style={{
                     backgroundColor: theme?.accent,
                     borderRadius: 4,
@@ -49,7 +93,7 @@ const FooterDialog = () => {
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                }}>
+                }} onPress={pickDocument}>
                     <Text style={{
                         color: theme?.text,
                         fontSize: 20
@@ -70,6 +114,43 @@ const FooterDialog = () => {
                         fontSize: 20
                     }}>Add Shelf</Text>
                 </Pressable>
+            </View>
+            {fileData ? <View style={{
+                width: "100%",
+                flex: 1,
+                gap: 12
+            }}>
+                <View>
+                    <Text style={{color: theme?.text, fontSize: 16}}>Title</Text>
+                    <View style={{backgroundColor: "#333533"}}>
+                    <TextInput value={fileData.title} onChangeText={(text) => setFileData({
+                        ...fileData,
+                        title: text})} style={{
+                            color: theme?.text,
+                            fontSize: 20,
+                        }}/>
+                    </View>
+                </View>
+                <View>
+                    <Text style={{color: theme?.text, fontSize: 16}}>Author</Text>
+                    <View style={{backgroundColor: "#333533"}}>
+                        <TextInput value={fileData.author} onChangeText={(text) => setFileData({
+                            ...fileData,
+                            author: text})} style={{
+                                color: theme?.text,
+                                fontSize: 20,
+                            }}/>
+                    </View>
+                </View>
+   
+                <Text style={{color: theme?.text, fontSize: 15}}>Url: {fileData.uri}</Text>
+                <Pressable style={styles.button}>
+                <Text style={{
+                        color: theme?.text,
+                        fontSize: 20,
+                    }} onPress={addBook}>Save Book</Text>
+                </Pressable>
+            </View> : null}
             </View> : null}
             
             <Pressable style={{
@@ -88,6 +169,41 @@ const FooterDialog = () => {
             </Pressable>
         </View>
     )
+}
+
+const createStyles = (theme: ThemeColorsType | null) => {
+    return StyleSheet.create({
+        drawer: {
+            width: "100%",
+            minHeight: 300,
+            backgroundColor: theme?.secondary,
+            bottom: 0,
+            left: 0,
+            padding: 10,
+            display: "flex",
+            flexDirection: "row",
+            borderTopColor: "#333533",
+            borderTopWidth: 3
+        },
+        drawerButtons: {
+            display: "flex",
+            flexDirection: "row",
+            marginLeft: "auto",
+            gap: 12,
+            marginBottom: 20
+        },
+        button: {
+            width: "100%",
+            height: 52,
+            backgroundColor: theme?.accent,
+            marginTop: "auto",
+            borderRadius: 4,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center"
+        }
+    })
 }
 
 export default FooterDialog
