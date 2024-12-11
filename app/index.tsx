@@ -10,6 +10,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useSQLiteContext } from "expo-sqlite";
 import { BookContext } from "@/context/BookContext";
 import WebView from "react-native-webview";
+import { Link } from "expo-router";
 
 export default function Library() {
   
@@ -99,7 +100,9 @@ export default function Library() {
               width: "100%",
               paddingHorizontal: 12,
             }}
-            renderItem={({item}) => <View style={{
+            renderItem={({item}) => <View 
+
+            style={{
               width: "100%",
               height: 136,
               backgroundColor: theme?.secondary,
@@ -159,6 +162,20 @@ export default function Library() {
                     gap: 16,
                     marginRight: 16
                   }}>
+                    <Link            href={{
+                      //@ts-ignore
+                      pathname: "/books/[id]",
+                      params: {
+                      id: item.id
+                        }
+                        }} style={{
+                          marginRight: "auto"
+                        }}>
+                          <Text style={{
+                            color: theme?.text,
+                            fontSize: 18
+                          }}>Read</Text>
+                    </Link>
                     <Octicons name="pencil" size={28} color={theme?.accent} />
                     <Pressable onPress={() => deleteBook(item.id)} >
 
