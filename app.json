@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/book_icon.png",
         "backgroundColor": "#121212"
-      }
+      },
+      "package": "e.book.reader"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +38,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "e5e630e4-0d60-4d26-b618-6093f8fd4df8"
+      }
+    },
+    "owner": "esmin53"
   }
 }
