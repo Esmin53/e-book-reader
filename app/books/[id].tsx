@@ -2,15 +2,16 @@ import { BookType } from "@/context/BookContext"
 import { Link, useLocalSearchParams } from "expo-router"
 import { useSQLiteContext } from "expo-sqlite"
 import { useContext, useEffect, useState } from "react"
-import { Text, View } from "react-native"
-import {WebView} from "react-native-webview"
-import * as FileSystem from 'expo-file-system';
+import { Pressable, Text, View } from "react-native"
 import { ThemeContext } from "@/context/ThemeContext"
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Pdf from "react-native-pdf"
 
 const Book = () => {
     const [book, setBook] = useState<BookType | null>(null)
-    const [base64, setBase64] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(0)
+    const [pages, setPages] = useState(0)
+    const [isChangingPage, setIsChangingPage] = useState(false);
 
     const {id} = useLocalSearchParams()
     const db = useSQLiteContext()
@@ -23,26 +24,61 @@ const Book = () => {
             `, [Number(id)])
 
             setBook(book)
-
-            console.log(book)
+            if(book?.currentPage)
+                setCurrentPage(book?.currentPage)
     }
-    useEffect(() => {
-        const loadFile = async () => {
-            if(!book) return
 
-            const fileBase64 = await FileSystem.readAsStringAsync(book.uri, {
-                encoding: FileSystem.EncodingType.Base64,
-            });
-            setBase64(fileBase64);
-        };
+    const handleNextPage = async () => {
+        if(currentPage === pages) return
+        if (isChangingPage) return;
+        setIsChangingPage(true)
 
-        loadFile();
-    }, [book]);
+        try {
+            setCurrentPage((prev) => prev + 1);
+    
+            if (book?.id) {
+                await db.runAsync(
+                    `UPDATE books SET currentPage = ? WHERE id = ?`,
+                    [currentPage + 1, book.id]
+                );
+            }
+        } catch (error) {
+            console.error("Error updating page:", error);
+        } 
+    };
 
+    const handlePrevPage = async () => {
+        if(currentPage === 0 || currentPage === 1) return
+
+        if (isChangingPage) return;
+        setIsChangingPage(true)
+
+        try {
+            setCurrentPage((prev) => {
+                const prevPage = prev - 1
+    
+                if (book?.id) {
+                    db.runAsync(
+                        `UPDATE books SET currentPage = ? WHERE id = ?`,
+                        [prevPage, book.id]
+                    ).catch((error) => console.error("Error updating page:", error));
+                }
+    
+                return prevPage
+    
+            })
+        } catch (error) {
+            console.error("Error updating page:", error);
+        }
+
+    }
 
     useEffect(() => {
         getBook()
     }, [])
+
+
+
     return <View style={{
         flex: 1,
         backgroundColor: theme?.background
@@ -52,7 +88,9 @@ const Book = () => {
                 paddingVertical: 10,
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
+                zIndex: 30,
+                backgroundColor: theme?.background
             }}>
                 <View style={{marginLeft: 10}}>
                 <Text style={{
@@ -69,14 +107,33 @@ const Book = () => {
                     <AntDesign name="back" size={32} color={theme?.text}/>
                 </Link>
             </View>
-        <WebView
-              originWhitelist={['*']}
-            source={{ uri: `${book?.uri}` }}
-            style={{ flex: 1,
-                width: "100%",
-
-             }}
-        />
+                {isChangingPage ? <View style={{
+                    flex: 1,
+                    width: "100%",
+                    height: "100%",
+                    position: "absolute",
+                    zIndex: 20,
+                    backgroundColor: 'rgba(250, 250, 250, 0.7)',
+                }} /> : null}
+               {book?.uri ? <Pdf
+               page={currentPage}
+               style={{flex: 1}}
+               enablePaging={true}
+               scrollEnabled={false}
+                    source={{
+                        uri: book?.uri,
+                        cache: true
+                    }}
+                onLoadProgress={(percent) => console.log(percent)}
+                onLoadComplete={(numberOfPages,filePath) => {
+                    console.log(`Number of pages: ${numberOfPages}`);
+                }}
+                onPageChanged={(page, numberOfPages) => {
+                    pages !== numberOfPages && setPages(numberOfPages)
+                    setIsChangingPage(false)
+                    console.log("Page Changed")
+                }}
+                /> : null}
             <View style={{
                 height: 68,
                 padding: 12,
@@ -85,11 +142,20 @@ const Book = () => {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
+                zIndex: 30,
+                backgroundColor: theme?.background
             }}>
-                <AntDesign name="caretleft" size={32} color={theme?.text} />
-                <Text style={{color: theme?.text, fontSize: 32}}>{book?.currentPage}</Text>
-                <AntDesign name="caretright" size={32} color={theme?.text} />
+                <Pressable onPress={() => {
+                    setIsChangingPage(true)
+                    handlePrevPage()
+                }}>
+                    <AntDesign name="caretleft" size={32} color={theme?.text} />
+                </Pressable>
+                <Text style={{color: theme?.text, fontSize: 32}}>{currentPage}/{pages}</Text>
+                <Pressable onPress={handleNextPage}>
+                    <AntDesign name="caretright" size={32} color={theme?.text} />
+                </Pressable>
             </View>
     </View>
 }

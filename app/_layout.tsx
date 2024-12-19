@@ -1,7 +1,7 @@
-import { BookContext, BookContextProvider } from "@/context/BookContext";
+import { BookContextProvider } from "@/context/BookContext";
 import { ThemeContextProvider } from "@/context/ThemeContext";
 import { Stack } from "expo-router";
-import { SQLiteProvider, useSQLiteContext, type SQLiteDatabase } from 'expo-sqlite';
+import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 
 const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
   try {

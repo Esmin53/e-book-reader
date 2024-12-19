@@ -12,6 +12,7 @@
       "supportsTablet": true
     },
     "android": {
+      "permissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/book_icon.png",
         "backgroundColor": "#121212"
@@ -34,7 +35,9 @@
           "backgroundColor": "#121211"
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "@config-plugins/react-native-blob-util",
+      "@config-plugins/react-native-pdf"
     ],
     "experiments": {
       "typedRoutes": true

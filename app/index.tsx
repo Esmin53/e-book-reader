@@ -2,15 +2,15 @@ import FooterDialog from "@/components/FooterDialog";
 import HeaderComponent from "@/components/HeaderComponent";
 import { ThemeColorsType } from "@/constants/Colors";
 import { ThemeContext } from "@/context/ThemeContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Octicons from '@expo/vector-icons/Octicons';
 import { LinearGradient } from "expo-linear-gradient";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useSQLiteContext } from "expo-sqlite";
 import { BookContext } from "@/context/BookContext";
-import WebView from "react-native-webview";
 import { Link } from "expo-router";
+import Pdf from "react-native-pdf"
 
 export default function Library() {
   
@@ -120,7 +120,14 @@ export default function Library() {
                 width: 86,
                 backgroundColor: "#525252"
               }}>
-                <WebView source={{ uri: `file://${item.uri}`}}
+                <Pdf 
+                page={1}
+                scrollEnabled={false}
+                trustAllCerts={true}
+                singlePage={true}
+                source={{ 
+                  uri: item.uri,
+                  cache: true}}
                   style={{
                     height: "100%",
                     width: 86,
