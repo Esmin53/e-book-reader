@@ -4,22 +4,26 @@ import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-nativ
 
 import Octicons from '@expo/vector-icons/Octicons';
 import { ThemeColorsType } from "@/constants/Colors";
+import { BookContext } from "@/context/BookContext";
+import { useSQLiteContext } from "expo-sqlite";
 
-const DeleteBook = () => {
+const DeleteBook = ({id}: {id: number}) => {
 
         const [isVisible, setIsVisible] = useState<boolean >(false)
     
         const { theme } = useContext(ThemeContext)
-    
+        const { setBooks } = useContext(BookContext)
+        const db = useSQLiteContext()
+
         const styles = createStyles(theme)
 
         const deleteBook = async (id: number) => {
-            /*await db.runAsync(
+            await db.runAsync(
               `DELETE FROM books WHERE id = ?`,
               [id]
             )
       
-            setBooks(prev => prev.filter((item) => item.id !== id))*/
+            setBooks(prev => prev.filter((item) => item.id !== id))
         }
 
     return (<View style={{
@@ -38,7 +42,7 @@ const DeleteBook = () => {
                         <Pressable style={styles.button} onPress={() => setIsVisible(false)}>
                             <Text style={{color: theme?.text}}>No</Text>
                         </Pressable>
-                        <Pressable style={[styles.button, {backgroundColor: "#0077b6"}]}>
+                        <Pressable style={[styles.button, {backgroundColor: "#0077b6"}]} onPress={() => deleteBook(id)}>
                             <Text style={{color: theme?.text}}>Yes</Text>
                         </Pressable>
                     </View>

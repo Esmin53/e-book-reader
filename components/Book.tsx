@@ -1,15 +1,13 @@
 import { ThemeContext } from "@/context/ThemeContext"
 import { Link } from "expo-router"
-import { useSQLiteContext } from "expo-sqlite"
 import { useContext } from "react"
-import { Pressable, StyleSheet, Text, View } from "react-native"
+import {StyleSheet, Text, View } from "react-native"
 import Pdf from "react-native-pdf"
-
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Octicons from '@expo/vector-icons/Octicons';
 import { ThemeColorsType } from "@/constants/Colors"
 import EditBookInfo from "./EditBookInfo"
 import DeleteBook from "./DeleteBook"
+
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const Book = (item: {
     uri: string,
@@ -19,18 +17,9 @@ const Book = (item: {
 }) => {
 
     const {theme} = useContext(ThemeContext)
-    const db = useSQLiteContext()
 
-    const styleSheet = createStyles(theme)
+    const styles = createStyles(theme)
 
-    const deleteBook = async (id: number) => {
-        await db.runAsync(
-          `DELETE FROM books WHERE id = ?`,
-          [id]
-        )
-  
-        //setBooks(prev => prev.filter((item) => item.id !== id))
-    }
 
     return (
     <View 
@@ -115,9 +104,8 @@ const Book = (item: {
                     fontSize: 18
                   }}>Read</Text>
             </Link>
-            {/*<Octicons name="pencil" size={28} color={theme?.accent} />*/}
-            <EditBookInfo />
-            <DeleteBook />
+            <EditBookInfo title={item.title} id={item.id} author={item.author}/>
+            <DeleteBook id={item.id}/>
             <MaterialCommunityIcons name="bookshelf" size={28} color={theme?.accent} />
           </View>
       </View>

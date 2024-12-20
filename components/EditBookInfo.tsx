@@ -1,22 +1,61 @@
 import { ThemeContext } from "@/context/ThemeContext"
 import { useContext, useState } from "react"
-import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native"
+import { Modal, Pressable, StyleSheet, Text, TextInput, ToastAndroid, View } from "react-native"
 
 import Octicons from '@expo/vector-icons/Octicons';
 import { ThemeColorsType } from "@/constants/Colors";
+import { BookContext } from "@/context/BookContext";
+import { useSQLiteContext } from "expo-sqlite";
 
-const EditBookInfo = () => {
+interface BookInfoProps {
+    title: string
+    author: string
+    id: number
+}
+
+const EditBookInfo = ({title, author, id}: BookInfoProps) => {
+    const [newTitle, setTitle] = useState(title)
+    const [newAuthor, setAuthor] = useState(author)
 
     const [isVisible, setIsVisible] = useState<boolean >(false)
 
     const { theme } = useContext(ThemeContext)
+    const { books, setBooks } = useContext(BookContext)
+    const db = useSQLiteContext()
 
     const styles = createStyles(theme)
 
-    return (
-        <View style={{
+    const updateBook = async () => {
+        let newBooks = books.map((item) => {
+            if(item.id !== id) {
+                return item
+            } else {
+                return {
+                    ...item,
+                    title: newTitle,
+                    author: newAuthor
+                }
+            }
+        })
 
-        }}>
+        try {
+            await db.runAsync(`
+                UPDATE books SET title = ?, author = ? WHERE id = ?
+                `, [newTitle, newAuthor, id])
+
+            setBooks(newBooks)
+
+            ToastAndroid.show(`Book info successfuly updated`, ToastAndroid.BOTTOM)
+            setIsVisible(false)
+        } catch (error) {
+            console.log(error)
+            ToastAndroid.show(`There was an error updating book info`, ToastAndroid.BOTTOM)
+        }
+
+    }
+
+    return (
+        <View style={{}}>
             <Pressable onPress={() => setIsVisible(true)}>
                 <Octicons name="pencil" size={28} color={theme?.accent} />
             </Pressable>
@@ -32,13 +71,13 @@ const EditBookInfo = () => {
                     <View style={styles.contentContainer}>
                         <View style={styles.inputContainer}>
                             <Text style={styles.inputLabel}>Title</Text>
-                            <TextInput style={styles.textInput} />
+                            <TextInput style={styles.textInput} value={newTitle} onChangeText={(text) => setTitle(text)}/>
                         </View>
                         <View style={styles.inputContainer}>
                             <Text style={styles.inputLabel}>Author</Text>
-                            <TextInput style={styles.textInput} />
+                            <TextInput style={styles.textInput} value={newAuthor} onChangeText={(text) => setAuthor(text)}/>
                         </View>
-                        <Pressable style={styles.button}>
+                        <Pressable style={styles.button} onPress={updateBook}>
                             <Text style={{
                                 color: theme?.text,
                                 fontSize: 17

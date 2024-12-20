@@ -3,35 +3,19 @@ import HeaderComponent from "@/components/HeaderComponent";
 import { ThemeColorsType } from "@/constants/Colors";
 import { ThemeContext } from "@/context/ThemeContext";
 import { useContext } from "react";
-import { FlatList, Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Octicons from '@expo/vector-icons/Octicons';
 import { LinearGradient } from "expo-linear-gradient";
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useSQLiteContext } from "expo-sqlite";
 import { BookContext } from "@/context/BookContext";
-import { Link } from "expo-router";
-import Pdf from "react-native-pdf"
-import EditBookInfo from "@/components/EditBookInfo";
 import Book from "@/components/Book";
 
 export default function Library() {
   
   const {theme} = useContext(ThemeContext)
 
-  const db = useSQLiteContext()
-
   const styles = createStyles(theme)
 
-  const { books, setBooks } = useContext(BookContext)
-
-  const deleteBook = async (id: number) => {
-      await db.runAsync(
-        `DELETE FROM books WHERE id = ?`,
-        [id]
-      )
-
-      setBooks(prev => prev.filter((item) => item.id !== id))
-  }
+  const { books } = useContext(BookContext)
 
   return (
     <View
