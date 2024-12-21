@@ -14,6 +14,23 @@ const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
         currentPage INTEGER DEFAULT 0
       )
     `);
+
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS bookshelves (
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL
+      )
+    `);
+
+    await db.execAsync(`
+      CREATE TABLE IF NOT EXISTS bookshelves_books (
+        id INTEGER PRIMARY KEY,
+        bookshelf_id INTEGER NOT NULL,
+        book_id INTEGER NOT NULL,
+        FOREIGN KEY(bookshelf_id) REFERENCES bookshelves(id),
+        FOREIGN KEY(book_id) REFERENCES books(id)
+      )
+    `);
     console.log('Migration completed successfully.');
   } catch (error) {
     console.error('Error during database migration:', error);

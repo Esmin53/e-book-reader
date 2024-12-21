@@ -10,7 +10,9 @@ import { BookContext, BookType } from "@/context/BookContext";
 const FooterDialog = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [name, setName] = useState<string >("Name")
-    
+    const [bookShelfName, setBookshelfName] = useState<string >("")
+    const [isBookshelf, setIsBooksHelf] = useState(false)
+
     const [fileData, setFileData] = useState<{
         title: string,
         author: string,
@@ -68,6 +70,27 @@ const FooterDialog = () => {
             ToastAndroid.show(`There was an error adding this book to your collection!`, ToastAndroid.BOTTOM)
         } 
       }
+
+      const addBookshelf = async () => {
+        if(bookShelfName.length === 0) return
+        try {
+            let { lastInsertRowId} = await db.runAsync(
+                `INSERT INTO bookshelves (name) VALUES (?)`,
+                [bookShelfName]
+            )
+
+            let bookshelf: {id: string, name: string} | null = await db.getFirstAsync(
+                `SELECT * FROM bookshelves WHERE id = ?`,
+            [ lastInsertRowId ])
+
+
+            console.log(bookshelf)
+            ToastAndroid.show(`You Successfully added ${bookshelf?.name}`, ToastAndroid.BOTTOM)
+        } catch (error) {
+            ToastAndroid.show(`There was an error adding this book to your collection!`, ToastAndroid.BOTTOM)
+        }
+
+      }
     
     return (
         <View style={[{
@@ -93,7 +116,10 @@ const FooterDialog = () => {
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
-                }} onPress={pickDocument}>
+                }} onPress={() => {
+                    setIsBooksHelf(false)
+                    pickDocument()
+                }}>
                     <Text style={{
                         color: theme?.text,
                         fontSize: 20
@@ -108,6 +134,9 @@ const FooterDialog = () => {
                     flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
+                }} onPress={() => {
+                    setFileData(null)
+                    setIsBooksHelf(true)
                 }}>
                     <Text style={{
                         color: theme?.text,
@@ -138,8 +167,8 @@ const FooterDialog = () => {
                             ...fileData,
                             author: text})} style={{
                                 color: theme?.text,
-                                fontSize: 20,
-                            }}/>
+                                fontSize: 20
+                            }} placeholderTextColor={theme?.text}/>
                     </View>
                 </View>
    
@@ -149,6 +178,27 @@ const FooterDialog = () => {
                         color: theme?.text,
                         fontSize: 20,
                     }} onPress={addBook}>Save Book</Text>
+                </Pressable>
+            </View> : null}
+            {isBookshelf ? <View style={{marginVertical: "auto"}}>
+                <Text style={{color: theme?.text,
+                    fontSize: 16,
+                    paddingBottom: 4
+                }}>Bookshelf Name</Text>
+                <TextInput value={bookShelfName} onChangeText={(text) => setBookshelfName(text)} 
+                    placeholder="e.g. Russian Literature" placeholderTextColor={theme?.text}
+                        style={{
+                            color: theme?.text,
+                            fontSize: 18,
+                            backgroundColor: "#333433",
+                            height: 48,
+                            paddingHorizontal: 6
+                        }}/>
+                        <Pressable style={[styles.button, {marginTop: 12}]}>
+                            <Text style={{
+                        color: theme?.text,
+                        fontSize: 20,
+                    }} onPress={addBookshelf}>Save Bookshelf</Text>
                 </Pressable>
             </View> : null}
             </View> : null}

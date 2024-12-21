@@ -47,6 +47,12 @@ export const BookContextProvider = ({children}: IProps) => {
               
                     //@ts-ignore
                     setBooks(books)
+
+                    const bookshelves = await db.getAllAsync(`
+                        SELECT * FROM bookshelves_books
+                        `)
+
+                        console.log("Bookshelves: ", bookshelves)
                 } catch (error) {
                   
                 }
