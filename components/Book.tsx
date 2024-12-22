@@ -8,6 +8,7 @@ import EditBookInfo from "./EditBookInfo"
 import DeleteBook from "./DeleteBook"
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import AddToShelf from "./AddToShlef"
 
 const Book = (item: {
     uri: string,
@@ -106,7 +107,7 @@ const Book = (item: {
             </Link>
             <EditBookInfo title={item.title} id={item.id} author={item.author}/>
             <DeleteBook id={item.id}/>
-            <MaterialCommunityIcons name="bookshelf" size={28} color={theme?.accent} />
+            <AddToShelf id={item.id}/>
           </View>
       </View>
     </View>

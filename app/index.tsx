@@ -8,6 +8,7 @@ import Octicons from '@expo/vector-icons/Octicons';
 import { LinearGradient } from "expo-linear-gradient";
 import { BookContext } from "@/context/BookContext";
 import Book from "@/components/Book";
+import { StatusBar } from "expo-status-bar";
 
 export default function Library() {
   

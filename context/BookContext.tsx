@@ -49,7 +49,7 @@ export const BookContextProvider = ({children}: IProps) => {
                     setBooks(books)
 
                     const bookshelves = await db.getAllAsync(`
-                        SELECT * FROM bookshelves_books
+                        SELECT * FROM bookshelves
                         `)
 
                         console.log("Bookshelves: ", bookshelves)

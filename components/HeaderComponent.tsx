@@ -11,6 +11,7 @@ const HeaderComponent = () => {
         <View style={{
             backgroundColor: theme?.secondary,
             zIndex: 20,
+            marginTop: 32
         }}>
             <View style={{
                 display: "flex",
