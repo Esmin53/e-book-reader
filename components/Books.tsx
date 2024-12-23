@@ -1,11 +1,12 @@
 import { useContext } from "react";
-import { FlatList, SafeAreaView, StyleSheet} from "react-native";
+import { FlatList, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import { BookContext } from "@/context/BookContext";
 import Book from "@/components/Book";
 import { ThemeContext } from "@/context/ThemeContext";
 import { LinearGradient } from "expo-linear-gradient";
 import { ThemeColorsType } from "@/constants/Colors";
-import { StatusBar } from "expo-status-bar";
+import { Link } from "expo-router";
+import LastBookRead from "./LastBookRead";
 
 const Books = () => {
 
@@ -15,13 +16,9 @@ const Books = () => {
   const styles = createStyles(theme)
 
     return (
-        <SafeAreaView style={{width: "100%", flex: 1}}>
-          {theme?.background && theme?.secondary ? <LinearGradient 
-            colors={[theme?.secondary, theme?.background]}
-            start={{ x: 0, y: 0 }}         
-            end={{ x: 0, y: 1 }}           
-            style={styles.gradient}/> : null}
+        <SafeAreaView style={{width: "100%", flex: 1, gap: 12}}>
           <FlatList 
+            ListHeaderComponent={<LastBookRead />}
             data={books}
             contentContainerStyle={{
               width: "100%",
@@ -35,34 +32,32 @@ const Books = () => {
 
 function createStyles(theme: ThemeColorsType | null) {
   return StyleSheet.create({
-    container: {
-      flex: 1,
-      height: "auto",
+    lastBookContainer: {
       width: "100%",
-      backgroundColor: theme?.background,
-      position: "relative"
-    },
-    navContainer: {
-      width: "100%",
-      gap: 10,
+      paddingHorizontal: 12,
       display: "flex",
       flexDirection: "row",
-      paddingTop: 10,
-      backgroundColor: theme?.secondary,
-      zIndex: 20,
-      position: "relative"
+      gap: 10
     },
-    text: {
-      fontSize: 18,
-      fontWeight: 600,
-      color: "#D8D2C2",
-      paddingHorizontal: 2
+    firstPage: {
+      height: 146,
+      width: 96,
+      backgroundColor: "#fff"
     },
     gradient: {
       width: "100%",
-      height: 44,
+      height: 48,
       zIndex: 10,
-      }
+      display: "flex",
+      alignItems: "center",
+      flexDirection: "row",
+      paddingHorizontal: 12
+      },
+    title: {
+      color: theme?.text,
+      fontSize: 22,
+      fontWeight: 600
+    }
   })
 }
 

@@ -6,6 +6,7 @@ import { Pressable, Text, View } from "react-native"
 import { ThemeContext } from "@/context/ThemeContext"
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Pdf from "react-native-pdf"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Book = () => {
     const [book, setBook] = useState<BookType | null>(null)
@@ -24,8 +25,11 @@ const Book = () => {
             `, [Number(id)])
 
             setBook(book)
-            if(book?.currentPage)
+            if(book?.currentPage) {
                 setCurrentPage(book?.currentPage)
+
+                await AsyncStorage.setItem('last-read-book', JSON.stringify(book))
+            }
     }
 
     const handleNextPage = async () => {
@@ -74,6 +78,7 @@ const Book = () => {
     }
 
     useEffect(() => {
+        
         getBook()
     }, [])
 
