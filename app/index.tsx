@@ -2,21 +2,20 @@ import FooterDialog from "@/components/FooterDialog";
 import HeaderComponent from "@/components/HeaderComponent";
 import { ThemeColorsType } from "@/constants/Colors";
 import { ThemeContext } from "@/context/ThemeContext";
-import { useContext } from "react";
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useContext, useState } from "react";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Octicons from '@expo/vector-icons/Octicons';
 import { LinearGradient } from "expo-linear-gradient";
-import { BookContext } from "@/context/BookContext";
-import Book from "@/components/Book";
+import Books from "@/components/Books";
+import Bookshelves from "@/components/Bookshelves";
 import { StatusBar } from "expo-status-bar";
 
 export default function Library() {
-  
+  const [navigation, setNavigation] = useState<'books' | 'shelves'>('books')
+
   const {theme} = useContext(ThemeContext)
 
   const styles = createStyles(theme)
-
-  const { books } = useContext(BookContext)
 
   return (
     <View
@@ -27,7 +26,11 @@ export default function Library() {
         <View style={{
 
         }}>
-          <Text style={[styles.text, {marginVertical: 12, textAlign: "left", paddingLeft: 10, color: theme?.accent}]}>Books</Text>
+          <Pressable onPress={() => setNavigation('books')}>
+            <Text style={[styles.text, {marginVertical: 12, textAlign: "left", paddingLeft: 10, 
+              color: navigation === 'books' ? theme?.accent : theme?.text
+              }]}>Books</Text>
+          </Pressable>
           <View style={{
             backgroundColor: theme?.accent,
             height: 1.5
@@ -37,7 +40,11 @@ export default function Library() {
 
           
         }}>
-          <Text style={[styles.text, {marginVertical: 12, textAlign: "center", color: theme?.text}]}>Shelves</Text>
+          <Pressable onPress={() => setNavigation('shelves')}>
+            <Text style={[styles.text, {marginVertical: 12, textAlign: "center", 
+              color: navigation === 'shelves' ? theme?.accent : theme?.text
+            }]}>Shelves</Text>
+          </Pressable>
           <View style={{
             backgroundColor: theme?.accent,
             height: 1.5
@@ -73,24 +80,13 @@ export default function Library() {
           }} />
         </View>
       </View>
-      {theme?.background && theme?.secondary ? <LinearGradient 
-        colors={[theme?.secondary, theme?.background]}
-        start={{ x: 0, y: 0 }}         
-        end={{ x: 0, y: 1 }}           
-        style={styles.gradient}/> : null}
 
 
-        <SafeAreaView style={{width: "100%", flex: 1}}>
-          <FlatList 
-            data={books}
-            contentContainerStyle={{
-              width: "100%",
-              paddingHorizontal: 12,
-            }}
-            renderItem={({item}) => <Book {...item} />}
-          />
-        </SafeAreaView>
+        {navigation === 'books' ? <Books /> : null}
+        {navigation === 'shelves' ? <Bookshelves /> : null}
+
       <FooterDialog />
+      <StatusBar backgroundColor={theme?.accent}/>
     </View>
   );
 }

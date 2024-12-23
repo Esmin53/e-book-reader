@@ -3,7 +3,7 @@ export const Colors = {
       text: '#393737',
       background: '#d8e2dc',
       secondary: "#e8e8e4",
-      main: "#E8D3FF",
+      gray: "#333533",
       accent: "#EC625F"
   
     },
@@ -11,7 +11,7 @@ export const Colors = {
       text: "#EDEDED",
       background: '#151515',
       secondary: "#212121",
-      main: "#7752FE",
+      gray: "#333533",
       accent: "#AA5656"
     },
   };

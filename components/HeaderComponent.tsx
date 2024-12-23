@@ -13,24 +13,7 @@ const HeaderComponent = () => {
             zIndex: 20,
             marginTop: 32
         }}>
-            <View style={{
-                display: "flex",
-                flexDirection: "row",
-                height: 12,
-                gap: 3,
-                marginBottom: 3
-                }}>
-                    <View style={{
-                        width: "64.5%",
-                        height: "100%",
-                        backgroundColor: theme?.accent,
-                    }} />
-                    <View style={{
-                        flex: 1,
-                        height: "100%",
-                        backgroundColor: theme?.accent,
-                    }} />
-                </View>
+ 
         <View style={{
             width:"100%",
             height: 52,
@@ -38,6 +21,7 @@ const HeaderComponent = () => {
             flexDirection: "row",
             alignItems: "center",
             gap: 3,
+            marginTop: 3.5
         }}>
             <Text style={{
                 color: theme?.text,

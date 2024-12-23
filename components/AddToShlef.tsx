@@ -41,7 +41,6 @@ const AddToShelf = ({id}: {id: number}) => {
                 return;
             }
     
-
             await db.runAsync(`
                 INSERT INTO bookshelves_books (bookshelf_id, book_id) VALUES (?, ?)
                 `, [selectedShelf, id])
@@ -164,7 +163,6 @@ const AddToShelf = ({id}: {id: number}) => {
                     </View>
                 </View>
             </Modal>
-            <StatusBar backgroundColor='#212121' />
         </View>
     )
 }
