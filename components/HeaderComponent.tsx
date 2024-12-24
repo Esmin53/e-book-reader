@@ -2,6 +2,7 @@ import { ThemeContext } from "@/context/ThemeContext"
 import { useContext } from "react"
 import { Pressable, Text, View } from "react-native"
 import Octicons from '@expo/vector-icons/Octicons';
+import Search from "./Search";
 
 const HeaderComponent = () => {
 
@@ -47,17 +48,7 @@ const HeaderComponent = () => {
                 <Octicons name="sun" size={24} color={theme?.text} /> :
                 <Octicons name="moon" size={24} color={theme?.text} />}
             </Pressable>
-            <Pressable style={{
-                height: "100%",
-                width: 52,
-                backgroundColor: theme?.accent,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center"
-            }}>
-                <Octicons name="search" size={24} color={theme?.text} /> :
-            </Pressable>
+            <Search />
         </View>
         <View style={{
                 display: "flex",
