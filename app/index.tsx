@@ -5,13 +5,14 @@ import { ThemeContext } from "@/context/ThemeContext";
 import { useContext, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Octicons from '@expo/vector-icons/Octicons';
-import { LinearGradient } from "expo-linear-gradient";
 import Books from "@/components/Books";
 import Bookshelves from "@/components/Bookshelves";
 import { StatusBar } from "expo-status-bar";
+import DropDown from "@/components/DropDown";
 
 export default function Library() {
   const [navigation, setNavigation] = useState<'books' | 'shelves'>('books')
+  const [isDropDownOpen, setIsDropDownOpen] = useState(false)
 
   const {theme} = useContext(ThemeContext)
 
@@ -70,10 +71,14 @@ export default function Library() {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "flex-end",
-            paddingRight: 10
+            paddingRight: 10,
+            position: "relative"
             }}>
-              <Octicons name="sort-desc" size={26} color={theme?.accent} />
-            </View>
+              <Pressable onPress={() => setIsDropDownOpen(prev => !prev)}>
+                <Octicons name="sort-desc" size={26} color={theme?.accent} />
+              </Pressable>
+              {isDropDownOpen ? <DropDown /> : null}
+          </View>
           <View style={{
             backgroundColor: theme?.accent,
             height: 1.5,

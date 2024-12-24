@@ -186,7 +186,7 @@ const FooterDialog = () => {
                     paddingBottom: 4
                 }}>Bookshelf Name</Text>
                 <TextInput value={bookShelfName} onChangeText={(text) => setBookshelfName(text)} 
-                    placeholder="e.g. Russian Literature" placeholderTextColor={theme?.text}
+                    placeholder="e.g. Russian Literature" placeholderTextColor={theme?.offGray}
                         style={{
                             color: theme?.text,
                             fontSize: 18,
