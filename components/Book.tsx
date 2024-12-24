@@ -30,7 +30,7 @@ const Book = (item: {
       backgroundColor: theme?.secondary,
       borderRadius: 4,
       borderWidth: 1,
-      borderColor: "#525252",
+      borderColor: theme?.offGray,
       display: "flex",
       flexDirection: "row",
       gap: 10,

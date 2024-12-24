@@ -51,7 +51,7 @@ export default function Library() {
             height: 1.5
           }} />
         </View>
-        <View style={{
+        {/*<View style={{
 
         }}>
           <Text style={[styles.text, {marginVertical: 12, textAlign: "right", color: theme?.text}]}>Market</Text>
@@ -59,7 +59,7 @@ export default function Library() {
             backgroundColor: theme?.accent,
             height: 1.5
           }} />
-        </View>
+        </View>*/}
         <View style={{
           flex: 1,
           height: "100%",

@@ -7,6 +7,7 @@ import { ThemeContext } from "@/context/ThemeContext"
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Pdf from "react-native-pdf"
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar"
 
 const Book = () => {
     const [book, setBook] = useState<BookType | null>(null)
@@ -83,10 +84,10 @@ const Book = () => {
     }, [])
 
 
-
     return <View style={{
         flex: 1,
-        backgroundColor: theme?.background
+        backgroundColor: theme?.background,
+        paddingTop: 34
         }}>
             <View style={{
                 display: "flex",
@@ -162,6 +163,7 @@ const Book = () => {
                     <AntDesign name="caretright" size={32} color={theme?.text} />
                 </Pressable>
             </View>
+            <StatusBar backgroundColor={theme?.background}/>
     </View>
 }
 

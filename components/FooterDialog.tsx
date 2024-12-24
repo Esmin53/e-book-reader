@@ -151,7 +151,7 @@ const FooterDialog = () => {
             }}>
                 <View>
                     <Text style={{color: theme?.text, fontSize: 16}}>Title</Text>
-                    <View style={{backgroundColor: "#333533"}}>
+                    <View style={{backgroundColor: theme?.offGray}}>
                     <TextInput value={fileData.title} onChangeText={(text) => setFileData({
                         ...fileData,
                         title: text})} style={{
@@ -162,7 +162,7 @@ const FooterDialog = () => {
                 </View>
                 <View>
                     <Text style={{color: theme?.text, fontSize: 16}}>Author</Text>
-                    <View style={{backgroundColor: "#333533"}}>
+                    <View style={{backgroundColor: theme?.offGray}}>
                         <TextInput value={fileData.author} onChangeText={(text) => setFileData({
                             ...fileData,
                             author: text})} style={{
@@ -232,7 +232,7 @@ const createStyles = (theme: ThemeColorsType | null) => {
             padding: 10,
             display: "flex",
             flexDirection: "row",
-            borderTopColor: "#333533",
+            borderTopColor: theme?.gray,
             borderTopWidth: 3
         },
         drawerButtons: {
