@@ -45,6 +45,7 @@ export default function RootLayout() {
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false}} />
             <Stack.Screen name="books/[id]" options={{ headerShown: false}}/>
+            <Stack.Screen name="bookshelves/[id]" options={{ headerShown: false}}/>
           </Stack>
         </BookContextProvider>
       </SQLiteProvider>

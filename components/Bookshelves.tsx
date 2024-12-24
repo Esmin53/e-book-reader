@@ -1,6 +1,7 @@
 import { ThemeColorsType } from "@/constants/Colors"
 import { ThemeContext } from "@/context/ThemeContext"
 import { LinearGradient } from "expo-linear-gradient"
+import { Link } from "expo-router"
 import { useSQLiteContext } from "expo-sqlite"
 import { StatusBar } from "expo-status-bar"
 import { useContext, useEffect, useState } from "react"
@@ -48,7 +49,13 @@ const Bookshelves = () => {
                         gap: 8
                     }}
                     renderItem={({item}) => (
-                        <View style={styles.renderItem}>
+                        <Link style={styles.renderItem}
+                        href={{
+                            pathname: "/bookshelves/[id]",
+                            params: {
+                                id: item.id
+                            }
+                        }}>
                             <Text style={{
                                 color: theme?.text,
                                 fontSize: 18,
@@ -56,7 +63,7 @@ const Bookshelves = () => {
                                 }}>
                                 {item.name}
                             </Text>
-                        </View>
+                        </Link>
                     )}
                 />
             </SafeAreaView>
