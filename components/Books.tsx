@@ -22,7 +22,6 @@ const Books = () => {
             data={books}
             contentContainerStyle={{
               width: "100%",
-              paddingHorizontal: 12,
             }}
             renderItem={({item}) => <Book {...item} />}
           />

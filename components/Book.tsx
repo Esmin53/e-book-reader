@@ -7,7 +7,6 @@ import { ThemeColorsType } from "@/constants/Colors"
 import EditBookInfo from "./EditBookInfo"
 import DeleteBook from "./DeleteBook"
 
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AddToShelf from "./AddToShlef"
 
 const Book = (item: {
@@ -23,6 +22,9 @@ const Book = (item: {
 
 
     return (
+      <View style={{
+        paddingHorizontal: 12
+      }}>
     <View 
     style={{
       width: "100%",
@@ -110,6 +112,7 @@ const Book = (item: {
             <AddToShelf id={item.id}/>
           </View>
       </View>
+    </View>
     </View>
     )
 }

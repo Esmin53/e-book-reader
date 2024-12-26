@@ -96,7 +96,7 @@ const FooterDialog = () => {
         <View style={[{
             position: "absolute",
             right: 10,
-            bottom: 28,
+            bottom: 64,
             gap: 12,
 
         }, isDialogOpen ? styles.drawer : null]}>

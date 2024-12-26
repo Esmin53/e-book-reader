@@ -1,11 +1,12 @@
 import { ThemeContext } from "@/context/ThemeContext"
 import { useContext, useState } from "react"
-import { Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native"
+import { Modal, Pressable, StyleSheet, Text, View } from "react-native"
 
 import Octicons from '@expo/vector-icons/Octicons';
 import { ThemeColorsType } from "@/constants/Colors";
-import { BookContext } from "@/context/BookContext";
+import { BookContext, BookType } from "@/context/BookContext";
 import { useSQLiteContext } from "expo-sqlite";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DeleteBook = ({id}: {id: number}) => {
 
@@ -18,12 +19,30 @@ const DeleteBook = ({id}: {id: number}) => {
         const styles = createStyles(theme)
 
         const deleteBook = async (id: number) => {
-            await db.runAsync(
-              `DELETE FROM books WHERE id = ?`,
-              [id]
-            )
+            try {
+                await db.runAsync(
+                    `DELETE FROM books WHERE id = ?`,
+                    [id]
+                    
+                  )
       
-            setBooks(prev => prev.filter((item) => item.id !== id))
+                  await db.runAsync(
+                      `DELETE FROM bookshelves_books WHERE book_id = ?`
+                  , [id])
+            
+                      const jsonValue: string | null = await AsyncStorage.getItem('last-read-book')
+      
+                      const lastBookRead: BookType | null = jsonValue !== null ? JSON.parse(jsonValue) : null
+      
+                      if(lastBookRead !== null && lastBookRead.id === id) {
+                          await AsyncStorage.removeItem('last-read-book')
+                      }
+      
+                  setBooks(prev => prev.filter((item) => item.id !== id))
+            } catch (error) {
+                console.log(error)
+            }
+
         }
 
     return (<View style={{

@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { ThemeContext } from "@/context/ThemeContext";
 import { BookContext, BookType } from "@/context/BookContext";
 import Book from "./Book";
+import { Link } from "expo-router";
 
 const Search = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -36,7 +37,7 @@ const Search = () => {
                 <View style={{
                     flex: 1,
                     backgroundColor: theme?.secondary,
-                    padding: 10
+                    padding: 12
                 }}>
                     <View style={{
                         width: "100%",
@@ -83,7 +84,32 @@ const Search = () => {
                     }} />
                     <FlatList 
                         data={results}
-                        renderItem={({item}) => <Book {...item} />}
+                        contentContainerStyle={{
+                            paddingVertical: 10,
+                            gap: 12
+                        }}
+                        renderItem={({item}) => <Link href={{
+                            pathname: `/books/[id]`,
+                            //@ts-ignore
+                            params: {
+                                id: item.id
+                                  }
+                        }}>
+<View>
+  <Text style={{
+    color: theme?.text,
+    fontSize: 20,
+  }}>
+    {item.title}
+  </Text>
+  <Text style={{
+    fontSize: 17,
+    color: theme?.text
+  }}>
+    {item.author}
+  </Text>
+</View>
+                        </Link>}
                     />
                 </View>
             </Modal>

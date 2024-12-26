@@ -8,7 +8,6 @@ import { useContext, useEffect, useState } from "react"
 import { StyleSheet, Text, View } from "react-native"
 import Pdf from "react-native-pdf"
 
-
 const LastBookRead = () => {
 
     const {theme} = useContext(ThemeContext)
@@ -29,7 +28,13 @@ const LastBookRead = () => {
     }, [])
 
     if(book === null)
-        return
+        return  <View style={{marginBottom: 6}}>
+          {theme?.background && theme?.secondary ? <LinearGradient 
+          colors={[theme?.secondary, theme?.background]}
+          start={{ x: 0, y: 0 }}         
+          end={{ x: 0, y: 1 }}           
+          style={[styles.gradient, {height: 26}]} /> : null}
+      </View>
 
     return (
         <View >
@@ -94,6 +99,7 @@ const crateStyles = (theme: ThemeColorsType | null) => {
         lastBookContainer: {
             width: "100%",
             paddingBottom: 12,
+            paddingHorizontal: 12,
             marginBottom: 12,
             display: "flex",
             flexDirection: "row",
@@ -117,7 +123,8 @@ const crateStyles = (theme: ThemeColorsType | null) => {
           title: {
             color: theme?.text,
             fontSize: 22,
-            fontWeight: 600
+            fontWeight: 600,
+            paddingHorizontal: 12
           }
     })
 }
